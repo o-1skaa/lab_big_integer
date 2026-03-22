@@ -1,4 +1,4 @@
-# Lab Assignment: BigInteger
+# Lab Assignment: BigIntege
 
 ## Student Info
 
