@@ -347,17 +347,6 @@ BigInteger BigInteger::operator%(const BigInteger& rhs) const {
     result %= rhs;
     return result;
 }
-BigInteger BigInteger::operator/(const BigInteger& rhs) const {
-    BigInteger result(*this);
-    result /= rhs;
-    return result;
-}
-
-BigInteger BigInteger::operator%(const BigInteger& rhs) const {
-    BigInteger result(*this);
-    result %= rhs;
-    return result;
-}
 
 bool BigInteger::is_zero() const {
     return digits_.size() == 1 && digits_[0] == 0;
