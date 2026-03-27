@@ -218,7 +218,6 @@ bool BigInteger::operator<=(const BigInteger& rhs) const {
 bool BigInteger::operator>=(const BigInteger& rhs) const {
     return !(*this < rhs);
 }
-
 BigInteger& BigInteger::operator*=(const BigInteger& rhs) {
     if (is_zero() || rhs.is_zero()) {
         digits_ = {0};
@@ -229,16 +228,16 @@ BigInteger& BigInteger::operator*=(const BigInteger& rhs) {
     std::vector<int> result(digits_.size() + rhs.digits_.size(), 0);
 
     for (size_t i = 0; i < digits_.size(); ++i) {
-        int carry = 0;
-        for (size_t j = 0; j < rhs.digits_.size() || carry > 0; ++j) {
-            long long cur = result[i + j] + carry;
-            if (j < rhs.digits_.size()) {
-                cur += 1LL * digits_[i] * rhs.digits_[j];
-            }
-
-            result[i + j] = static_cast<int>(cur % 10);
-            carry = static_cast<int>(cur / 10);
+        for (size_t j = 0; j < rhs.digits_.size(); ++j) {
+            result[i + j] += digits_[i] * rhs.digits_[j];
         }
+    }
+
+    int carry = 0;
+    for (size_t i = 0; i < result.size(); ++i) {
+        result[i] += carry;
+        carry = result[i] / 10;
+        result[i] %= 10;
     }
 
     while (result.size() > 1 && result.back() == 0) {
