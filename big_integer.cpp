@@ -329,6 +329,12 @@ BigInteger& BigInteger::operator/=(const BigInteger& rhs) {
     normalize();
     return *this;
 }
+BigInteger BigInteger::operator/(const BigInteger& rhs) const {
+    BigInteger result(*this);
+    result /= rhs;
+    return result;
+}
+
 
 BigInteger& BigInteger::operator%=(const BigInteger& rhs) {
     BigInteger q = *this / rhs;
