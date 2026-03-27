@@ -233,10 +233,8 @@ BigInteger& BigInteger::operator*=(const BigInteger& rhs) {
         }
     }
 
-    int carry = 0;
-    for (size_t i = 0; i < result.size(); ++i) {
-        result[i] += carry;
-        carry = result[i] / 10;
+    for (size_t i = 0; i + 1 < result.size(); ++i) {
+        result[i + 1] += result[i] / 10;
         result[i] %= 10;
     }
 
