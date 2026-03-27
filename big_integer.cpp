@@ -347,5 +347,72 @@ BigInteger BigInteger::operator%(const BigInteger& rhs) const {
     result %= rhs;
     return result;
 }
+BigInteger BigInteger::operator/(const BigInteger& rhs) const {
+    BigInteger result(*this);
+    result /= rhs;
+    return result;
+}
 
+BigInteger BigInteger::operator%(const BigInteger& rhs) const {
+    BigInteger result(*this);
+    result %= rhs;
+    return result;
+}
+
+bool BigInteger::is_zero() const {
+    return digits_.size() == 1 && digits_[0] == 0;
+}
+
+bool BigInteger::is_negative() const {
+    return negative_;
+}
+
+BigInteger::operator bool() const {
+    return !is_zero();
+}
+
+std::string BigInteger::to_string() const {
+    std::string result;
+    if (negative_) {
+        result += '-';
+    }
+    for (size_t i = digits_.size(); i > 0; --i) {
+        result += char('0' + digits_[i - 1]);
+    }
+    return result;
+}
+
+std::ostream& operator<<(std::ostream& os, const BigInteger& value) {
+    os << value.to_string();
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, BigInteger& value) {
+    std::string str;
+    is >> str;
+    value = BigInteger(str);
+    return is;
+}
+
+BigInteger& BigInteger::operator++() {
+    *this += BigInteger(1);
+    return *this;
+}
+
+BigInteger BigInteger::operator++(int) {
+    BigInteger temp(*this);
+    ++(*this);
+    return temp;
+}
+
+BigInteger& BigInteger::operator--() {
+    *this -= BigInteger(1);
+    return *this;
+}
+
+BigInteger BigInteger::operator--(int) {
+    BigInteger temp(*this);
+    --(*this);
+    return temp;
+}
 
