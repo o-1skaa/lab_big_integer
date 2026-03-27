@@ -172,6 +172,10 @@ BigInteger BigInteger::operator+(const BigInteger& rhs) const {
     result += rhs;
     return result;
 }
+BigInteger& BigInteger::operator-=(const BigInteger& rhs) {
+    *this += (-rhs);
+    return *this;
+}
 
 BigInteger BigInteger::operator-(const BigInteger& rhs) const {
     BigInteger result(*this);
