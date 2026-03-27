@@ -159,4 +159,58 @@ BigInteger& BigInteger::operator+=(const BigInteger& rhs){
     normalize();
     return *this;
 }
+BigInteger BigInteger::operator-() const {
+    BigInteger result(*this);
+    if (!result.isZero()) {
+        result.negative_ = !result.negative_;
+    }
+    return result;
+}
+
+BigInteger BigInteger::operator+(const BigInteger& rhs) const {
+    BigInteger result(*this);
+    result += rhs;
+    return result;
+}
+
+BigInteger BigInteger::operator-(const BigInteger& rhs) const {
+    BigInteger result(*this);
+    result -= rhs;
+    return result;
+}
+
+bool BigInteger::operator==(const BigInteger& rhs) const {
+    return negative_ == rhs.negative_ && digits_ == rhs.digits_;
+}
+
+bool BigInteger::operator!=(const BigInteger& rhs) const {
+    return !(*this == rhs);
+}
+
+bool BigInteger::operator<(const BigInteger& rhs) const {
+    if (negative_ != rhs.negative_) {
+        return negative_;
+    }
+
+    int cmp = compareAbs(*this, rhs);
+
+    if (!negative_) {
+        return cmp < 0;
+    } else {
+        return cmp > 0;
+    }
+}
+
+bool BigInteger::operator>(const BigInteger& rhs) const {
+    return rhs < *this;
+}
+
+bool BigInteger::operator<=(const BigInteger& rhs) const {
+    return !(*this > rhs);
+}
+
+bool BigInteger::operator>=(const BigInteger& rhs) const {
+    return !(*this < rhs);
+}
+
 
