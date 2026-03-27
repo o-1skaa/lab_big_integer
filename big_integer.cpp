@@ -409,7 +409,6 @@ BigInteger& BigInteger::operator--() {
     *this -= BigInteger(1);
     return *this;
 }
-
 BigInteger BigInteger::operator--(int) {
     BigInteger temp(*this);
     --(*this);
