@@ -213,4 +213,44 @@ bool BigInteger::operator>=(const BigInteger& rhs) const {
     return !(*this < rhs);
 }
 
+BigInteger& BigInteger::operator*=(const BigInteger& rhs) {
+    if (isZero() || rhs.isZero()) {
+        digits_ = {0};
+        negative_ = false;
+        return *this;
+    }
+
+    std::vector<int> result(digits_.size() + rhs.digits_.size(), 0);
+
+    for (size_t i = 0; i < digits_.size(); ++i) {
+        for (size_t j = 0; j < rhs.digits_.size(); ++j) {
+            result[i + j] += digits_[i] * rhs.digits_[j];
+        }
+    }
+
+    // обработка переносов
+    int carry = 0;
+    for (size_t i = 0; i < result.size(); ++i) {
+        result[i] += carry;
+        carry = result[i] / 10;
+        result[i] %= 10;
+    }
+
+    // убрать лишние нули
+    while (result.size() > 1 && result.back() == 0) {
+        result.pop_back();
+    }
+
+    digits_ = result;
+    negative_ = (negative_ != rhs.negative_);
+
+    return *this;
+}
+
+BigInteger BigInteger::operator*(const BigInteger& rhs) const {
+    BigInteger result(*this);
+    result *= rhs;
+    return result;
+}
+
 

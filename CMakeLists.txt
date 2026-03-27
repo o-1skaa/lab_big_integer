@@ -20,8 +20,7 @@ FetchContent_MakeAvailable(googletest)
 #  BigInteger library
 # ──────────────────────────────────────────────
 add_library(big_integer STATIC big_integer.cpp
-        main.cpp
-        main.cpp)
+)
 target_include_directories(big_integer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Strict flags apply ONLY to the bigint code, not to GoogleTest
