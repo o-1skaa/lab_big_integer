@@ -13,16 +13,18 @@ BigInteger::BigInteger() : negative_(false) {
     digits_.push_back(0);
 }
 BigInteger::BigInteger(int value) : negative_(false) {
-    if (value < 0){
+    long long temp = value;
+    if (temp < 0){
         negative_ = true;
-        value = -value;
+        temp = -temp;
     }
-    if (value == 0){
+    if (temp == 0){
         digits_.push_back(0);
+        return;
     }
-    while (value > 0){
-        digits_.push_back(value%10);
-        value /=10;
+    while (temp > 0){
+        digits_.push_back(temp%10);
+        temp /=10;
     }
 }
 BigInteger::BigInteger(long long value) : negative_(false) {
@@ -218,7 +220,7 @@ bool BigInteger::operator>=(const BigInteger& rhs) const {
 }
 
 BigInteger& BigInteger::operator*=(const BigInteger& rhs) {
-    if (isZero() || rhs.isZero()) {
+    if (is_zero() || rhs.is_zero()) {
         digits_ = {0};
         negative_ = false;
         return *this;
@@ -227,27 +229,25 @@ BigInteger& BigInteger::operator*=(const BigInteger& rhs) {
     std::vector<int> result(digits_.size() + rhs.digits_.size(), 0);
 
     for (size_t i = 0; i < digits_.size(); ++i) {
-        for (size_t j = 0; j < rhs.digits_.size(); ++j) {
-            result[i + j] += digits_[i] * rhs.digits_[j];
+        int carry = 0;
+        for (size_t j = 0; j < rhs.digits_.size() || carry > 0; ++j) {
+            long long cur = result[i + j] + carry;
+            if (j < rhs.digits_.size()) {
+                cur += 1LL * digits_[i] * rhs.digits_[j];
+            }
+
+            result[i + j] = static_cast<int>(cur % 10);
+            carry = static_cast<int>(cur / 10);
         }
     }
 
-    // обработка переносов
-    int carry = 0;
-    for (size_t i = 0; i < result.size(); ++i) {
-        result[i] += carry;
-        carry = result[i] / 10;
-        result[i] %= 10;
-    }
-
-    // убрать лишние нули
     while (result.size() > 1 && result.back() == 0) {
         result.pop_back();
     }
 
     digits_ = result;
     negative_ = (negative_ != rhs.negative_);
-
+    normalize();
     return *this;
 }
 
