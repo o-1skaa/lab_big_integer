@@ -253,4 +253,93 @@ BigInteger BigInteger::operator*(const BigInteger& rhs) const {
     return result;
 }
 
+BigInteger& BigInteger::operator/=(const BigInteger& rhs) {
+    // Деление на ноль
+    if (rhs.isZero()) {
+        throw std::runtime_error("division by zero");
+    }
+
+    // Если делимое равно нулю, результат сразу ноль
+    if (isZero()) {
+        return *this;
+    }
+
+    // Запоминаем знак результата
+    bool resultNegative = (negative_ != rhs.negative_);
+
+    // Работаем с модулями
+    BigInteger dividend(*this);
+    dividend.negative_ = false;
+
+    BigInteger divisor(rhs);
+    divisor.negative_ = false;
+
+    // Если |dividend| < |divisor|, результат 0
+    if (dividend < divisor) {
+        digits_ = {0};
+        negative_ = false;
+        return *this;
+    }
+
+    BigInteger current;
+    current.digits_ = {0};
+    current.negative_ = false;
+
+    std::vector<int> quotient;
+
+    // Идём от старших цифр к младшим
+    for (size_t i = dividend.digits_.size(); i > 0; --i) {
+        // current = current * 10 + очередная цифра
+        if (!(current.digits_.size() == 1 && current.digits_[0] == 0)) {
+            current.digits_.insert(current.digits_.begin(), 0);
+        }
+        current.digits_[0] = dividend.digits_[i - 1];
+        current.normalize();
+
+        // Подбираем цифру частного от 0 до 9
+        int digit = 0;
+        while (current >= divisor) {
+            current -= divisor;
+            ++digit;
+        }
+
+        quotient.push_back(digit);
+    }
+
+    // quotient сейчас в прямом порядке: от старших к младшим
+    // а нам нужно хранить в обратном
+    digits_.clear();
+
+    size_t pos = 0;
+    while (pos < quotient.size() && quotient[pos] == 0) {
+        ++pos;
+    }
+
+    if (pos == quotient.size()) {
+        digits_ = {0};
+        negative_ = false;
+        return *this;
+    }
+
+    for (size_t i = quotient.size(); i > pos; --i) {
+        digits_.push_back(quotient[i - 1]);
+    }
+
+    negative_ = resultNegative;
+    normalize();
+    return *this;
+}
+
+BigInteger& BigInteger::operator%=(const BigInteger& rhs) {
+    BigInteger q = *this / rhs;
+    *this -= q * rhs;
+    return *this;
+}
+
+BigInteger BigInteger::operator%(const BigInteger& rhs) const {
+    BigInteger result(*this);
+    result %= rhs;
+    return result;
+}
+
 
